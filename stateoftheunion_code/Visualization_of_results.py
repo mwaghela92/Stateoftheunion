@@ -10,11 +10,12 @@ import pandas as pd
 import ast
 from collections import Counter
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 #path for mayur's macbook
-#Results = pd.read_csv('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/Results1.csv')
+Results = pd.read_csv('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/Results1.csv')
 #path for server
-Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/Results1.csv')
+#Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/Results1.csv')
 
 
 
@@ -49,7 +50,53 @@ filtered_keywords = list()
 
 
 counter_filtered_keywords = Counter(filtered_keywords)
-print (counter_filtered_keywords.most_common(30))
+freq= list()
+x =  (counter_filtered_keywords.most_common(30))
+
+
+most_common_filtered_keywords = list()
+for i,j in x:
+    most_common_filtered_keywords.append(i)  
+for i,j in x:
+    freq.append(j)
+most_common_df = pd.DataFrame(columns = ['KeyWords', 'Frequency'])
+most_common_df['KeyWords'] = most_common_filtered_keywords
+most_common_df['Frequency'] = freq
 
 sns.set(style = 'darkgrid')
-filtered_keyword_plot = sns.countplot(filtered_keywords)
+sns.barplot(x = 'Frequency', y = 'KeyWords', data =most_common_df  )
+
+def filter(list_keywords):
+    non_value_keywords= [ 'country', 'person', 'place', 'populated place', 'agent', 'organisation' , 'Office holder', 'Work']
+    filtered_keywords = list()
+    [filtered_keywords.append(x) for x in list_keywords if x not in non_value_keywords ]
+    counter_filtered_keywords = Counter(filtered_keywords)
+    keywords, count = zip(*counter_filtered_keywords)
+    most_common_df = pd.DataFrame(columns = ['KeyWords', 'Frequency'])
+    most_common_df['KeyWords'] = keywords
+    most_common_df['Frequency'] = count
+    return most_common_df
+
+
+def plotgraph(most_common_df):
+    sns.set(style = 'darkgrid')
+    sns.barplot(x = 'Frequency', y = 'KeyWords', data =most_common_df  )
+    
+    
+
+a = filter(Results.iloc[0,4])
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
