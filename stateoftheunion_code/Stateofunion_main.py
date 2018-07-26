@@ -7,9 +7,12 @@ Created on Tue Jul 24 16:29:34 2018
 
 import os
 from SPARQLWrapper import SPARQLWrapper, JSON
-import requests
+#import requests
 import urllib.parse
-from nltk.corpus import stopwords
+#from nltk.corpus import stopwords
+import pandas as pd  
+import time
+import datetime
 
 ##... initial consts
 BASE_URL = 'http://api.dbpedia-spotlight.org/en/annotate?text={text}&confidence={confidence}&support={support}'
@@ -19,24 +22,33 @@ all_files = os.listdir(path)
 os.chdir('/Users/mayur/Documents/GitHub/Stateoftheunion/stateoftheunion_code/')
 from retry import *
 
-keywordlist = list()
+##... 
+keywordlist = list() 
+all_keywords_list = list()
+
 os.chdir(path)
 
 from retry import *
 
 for j in range(len(all_files)):
+#for j in range(3):
+    keywordlist_iter = list()
     with open(all_files[j], encoding = 'utf8') as fd:
          Text = fd.read()
              
     len_text = len(Text)
-    size = int(len_text/10)
+    size = int(len_text/20)
     all_keywords = list()
-    size1 = size +20
-    
+    size1 = size +10
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        "Starting of loop "+ str(j)+ "\n\n")
     
     for i in range(0,len_text,size):
+        
+        StartReadTime = time.time()
+        
         TEXT = Text[i:i+size1]
-        if len(TEXT)>100:
+        if len(TEXT)>40:
     
             CONFIDENCE = '0.5'
             SUPPORT = '50'
@@ -91,10 +103,12 @@ for j in range(len(all_files)):
                 """    }
                    ?s rdf:type ?p .
                    ?p rdfs:label ?l.
-                    ?s dct:subject ?sub .
-                       ?sub rdfs:label ?sname.
+                   ?s dct:subject/skos:broader ?sub .
+                   ?sub vrank:hasRank/vrank:rankValue ?rank.
+                   ?sub rdfs:label ?sname.
                    FILTER (lang(?l) = 'en')
-                } order by ?rank limit 3
+                } order by desc(?rank) 
+                
                        
                     """)
             
@@ -109,12 +123,22 @@ for j in range(len(all_files)):
             sparql.setReturnFormat(JSON)
             results = sparql.query().convert()
                 
-            
+            all_keywords_label = list()
             for result in results["results"]["bindings"]:
-                all_keywords.append( result['l']['value'])
+                all_keywords_label.append( result['l']['value'])
                 
+            unique_keywordslabel_in_iter = set(all_keywords_label)
+            
+            all_keywords_subject = list()
             for result in results["results"]["bindings"]:
-                all_keywords.append( result['sname']['value'])
+                all_keywords_subject.append( result['sname']['value'])
+                
+            unique_keywordssubject_in_iter = set(all_keywords_subject)
+            
+            [keywordlist_iter.append(x) for x in unique_keywordslabel_in_iter]
+            [keywordlist_iter.append(x) for x in unique_keywordssubject_in_iter]
+            
+            
                 
             #print (y).
             #print(x)
@@ -122,19 +146,31 @@ for j in range(len(all_files)):
             #item = list()
             for res in resources:
                 all_keywords.append(res['@surfaceForm'])
+            
+            
                 
-    unique_keywords = set(all_keywords)
+    #unique_keywords = set(all_keywords)
     #print(unique_keywords)
-    keywordlist.append([])
-    [keywordlist[j].append(x) for x in unique_keywords]
+    #keywordlist.append([])
+    all_keywords_list.append([])
+    #[keywordlist[j].append(x) for x in unique_keywords]
+    #[all_keywords_list[j].append(x) for x in all_keywords]
+    [all_keywords_list[j].append(x) for x in keywordlist_iter]
     
-    print(len(all_keywords))
-    print(len(unique_keywords))
+    #print(len(all_keywords))
+    print(len(keywordlist_iter), '\n\n' )
+    EndReadTime = time.time()
+    TotalReadTime = round((EndReadTime - StartReadTime), 2)
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+      "End of loop " + str(j))
+    print("Total loop" + str(j) + " time : "+str(TotalReadTime)+" seconds.")
 
+###... Creating a data frame to store the resulting keywords
+    
+Result_df= pd.DataFrame(columns = ['FileNames', 'President', 'Year' , 'KeyWords' ])
 
-import pandas as pd      
-Result_df= pd.DataFrame(columns = ['FileNames', 'President', 'Year' , 'KeyWords'])
-Result_df['FileNames']= all_files
+###... appending the names and years in a list and then storing the values to the 
+###... data frame
 
 presidents = list()
 year = list()
@@ -142,14 +178,20 @@ for i in range(29):
     presidents.append(all_files[i][:-9])
     temp_year = all_files[i][-8:]
     year.append(temp_year[:-4])
-    
+
+Result_df['FileNames']= all_files   
 Result_df['President']= presidents
 Result_df['Year']= year
-Result_df['KeyWords']= keywordlist
+Result_df['KeyWords']= all_keywords_list
+
+
+###... Sorting the data frame by year and exporting it to a csv file
 
 Result_df.sort_values('Year', inplace = True)
+Result_df = Result_df.reset_index(drop=True)
 os.chdir('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/')
-Result_df.to_csv('Results1.csv', encoding = 'utf-8')
+Result_df.to_csv('Results1.csv')
+
 
 
 
