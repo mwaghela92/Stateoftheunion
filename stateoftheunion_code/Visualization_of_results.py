@@ -17,11 +17,14 @@ import os
 #path for mayur's macbook
 #Results = pd.read_csv('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/Results1.csv')
 #path for server
-Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/Results3_withoutbroader.csv')
-pp = PdfPages("Plotswithoutbroader2.pdf")
+Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/'+
+                      'Results4_withoutbroader_withresources.csv')
+pp = PdfPages("Plotswith2charts.pdf")
 
 
 Results['KeyWords'] = Results['KeyWords'].apply(
+        lambda x: ast.literal_eval(x))
+Results['Resources'] = Results['Resources'].apply(
         lambda x: ast.literal_eval(x))
 
 # Creating an empty list to store keywords
@@ -80,17 +83,32 @@ def filter(list_keywords):
     most_common_df = pd.DataFrame(columns = ['KeyWords', 'Frequency'])
     most_common_df['KeyWords'] = keywords
     most_common_df['Frequency'] = count
-    most_common_df.sort_values('Frequency')
-    return most_common_df[:5]
+    most_common_df.sort_values('Frequency', inplace = True, ascending = False)
+    return most_common_df
+
+def resourcefilter(resources):
+    counter_resources = Counter(resources)
+    resources, count = zip(*counter_resources.items())
+    most_common_df = pd.DataFrame(columns = ['Resources', 'Count'])
+    most_common_df['Resources'] = resources
+    most_common_df['Count'] = count
+    most_common_df.sort_values('Count', inplace = True, ascending = False)
+    return most_common_df
+    
 
 
-def plotgraph(pp, most_common_df):
+def plotgraph(pp, most_common_df1,  most_common_df2, president, year):
     sns.set(style = 'darkgrid')
     #sns.set_context({"figure.figsize": (5, 5)})
-    my_plot = sns.barplot(x = 'Frequency', y = 'KeyWords', data =most_common_df  )   
-    ##path of mayur's macbook
-    #plt.savefig('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/my')
-    ##path for server
+    plt.subplot(1,2,1)
+    my_plot = sns.barplot(x = 'Frequency', y = 'KeyWords', data =most_common_df1  )   
+    plt.title(" Keywords " + str(president) + " " + str(year) )
+    
+    plt.subplot(1,2,2)
+    my_plot = sns.barplot(x = 'Count', y = 'Resources', data =most_common_df2  )   
+    plt.title(" Resources " + str(president) + " " + str(year) )
+    
+    
     pp.savefig(bbox_inches = 'tight')
     #return x
 
@@ -102,19 +120,17 @@ def plotgraph(pp, most_common_df):
 os.chdir('E:/mayur/State of the union/Stateoftheunion/Results/')
 
 for i in range(len(Results)):
+    #i = 0
     a = filter(Results.iloc[i,4])
-    plotgraph(pp, a)
+    b = resourcefilter(Results.iloc[i,5])
+    plotgraph(pp, a[:20], b[:20] , Results.loc[i,'President'] , Results.loc[i,'Year' ])
     
 pp.close()
+ 
+    
+    
+    
 
-
-    
-    
-    
-    
-    
-    
-    
     
     
     

@@ -38,6 +38,7 @@ from retry import *
 ##... 
 keywordlist = list() 
 all_keywords_list = list()
+all_resources_list = list()
 
 os.chdir(path)
 
@@ -46,6 +47,7 @@ from retry import *
 for j in range(len(all_files)):
 #for j in range(3):
     keywordlist_iter = list()
+    all_resources = list()
     with open(all_files[j], encoding = 'utf8') as fd:
          Text = fd.read()
              
@@ -108,7 +110,7 @@ for j in range(len(all_files)):
             
             sparql.setQuery(
                 """PREFIX vrank:<http://purl.org/voc/vrank#>
-                   SELECT DISTINCT ?l ?sname
+                   SELECT DISTINCT ?sname
                    FROM <http://dbpedia.org> 
                    FROM <http://people.aifb.kit.edu/ath/#DBpedia_PageRank>
                    WHERE {
@@ -134,20 +136,20 @@ for j in range(len(all_files)):
             
             sparql.setReturnFormat(JSON)
             results = sparql.query().convert()
-                
+            """    
             all_keywords_label = list()
             for result in results["results"]["bindings"]:
                 all_keywords_label.append( result['l']['value'])
                 
             unique_keywordslabel_in_iter = set(all_keywords_label)
-            
+            """
             all_keywords_subject = list()
             for result in results["results"]["bindings"]:
                 all_keywords_subject.append( result['sname']['value'])
                 
             unique_keywordssubject_in_iter = set(all_keywords_subject)
             
-            [keywordlist_iter.append(x) for x in unique_keywordslabel_in_iter]
+            #[keywordlist_iter.append(x) for x in unique_keywordslabel_in_iter]
             [keywordlist_iter.append(x) for x in unique_keywordssubject_in_iter]
             
             
@@ -159,15 +161,20 @@ for j in range(len(all_files)):
             for res in resources:
                 all_keywords.append(res['@surfaceForm'])
             
+            for res in resources:
+                all_resources.append(res['@surfaceForm'])
+            
             
                 
     #unique_keywords = set(all_keywords)
     #print(unique_keywords)
     #keywordlist.append([])
     all_keywords_list.append([])
+    all_resources_list.append([])
     #[keywordlist[j].append(x) for x in unique_keywords]
     #[all_keywords_list[j].append(x) for x in all_keywords]
     [all_keywords_list[j].append(x) for x in keywordlist_iter]
+    [all_resources_list[j].append(x) for x in all_resources]
     
     #print(len(all_keywords))
     print(len(keywordlist_iter), '\n\n' )
@@ -179,7 +186,8 @@ for j in range(len(all_files)):
 
 ###... Creating a data frame to store the resulting keywords
     
-Result_df= pd.DataFrame(columns = ['FileNames', 'President', 'Year' , 'KeyWords' ])
+Result_df= pd.DataFrame(columns = ['FileNames', 'President', 'Year' , 'KeyWords',
+                                   'Resources'])
 
 ###... appending the names and years in a list and then storing the values to the 
 ###... data frame
@@ -195,6 +203,9 @@ Result_df['FileNames']= all_files
 Result_df['President']= presidents
 Result_df['Year']= year
 Result_df['KeyWords']= all_keywords_list
+Result_df['Resources']= all_resources_list
+
+
 
 
 ###... Sorting the data frame by year and exporting it to a csv file
@@ -210,7 +221,7 @@ Result_df = Result_df.reset_index(drop=True)
 ##path for server
 os.chdir('E:/mayur/State of the union/Stateoftheunion/Results/')
 
-Result_df.to_csv('Results3_withoutbroader.csv', encoding = 'utf-8')
+Result_df.to_csv('Results4_withoutbroader_withresources.csv', encoding = 'utf-8')
 
 
 
