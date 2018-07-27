@@ -18,7 +18,7 @@ import os
 #Results = pd.read_csv('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/Results1.csv')
 #path for server
 Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/Results3_withoutbroader.csv')
-pp = PdfPages("Plotswithoutbroader.pdf")
+pp = PdfPages("Plotswithoutbroader2.pdf")
 
 
 Results['KeyWords'] = Results['KeyWords'].apply(
@@ -86,12 +86,12 @@ def filter(list_keywords):
 
 def plotgraph(pp, most_common_df):
     sns.set(style = 'darkgrid')
-    sns.set_context({"figure.figsize": (5, 5)})
+    #sns.set_context({"figure.figsize": (5, 5)})
     my_plot = sns.barplot(x = 'Frequency', y = 'KeyWords', data =most_common_df  )   
     ##path of mayur's macbook
     #plt.savefig('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/my')
     ##path for server
-    #pp.savefig()
+    pp.savefig(bbox_inches = 'tight')
     #return x
 
 
@@ -102,7 +102,6 @@ def plotgraph(pp, most_common_df):
 os.chdir('E:/mayur/State of the union/Stateoftheunion/Results/')
 
 for i in range(len(Results)):
-    i = 0
     a = filter(Results.iloc[i,4])
     plotgraph(pp, a)
     

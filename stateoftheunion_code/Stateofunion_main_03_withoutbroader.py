@@ -116,8 +116,7 @@ for j in range(len(all_files)):
                 """    }
                    ?s rdf:type ?p .
                    ?p rdfs:label ?l.
-                   ?s dct:subject ?sub .
-                   
+                   ?s dct:subject ?sub . 
                    ?sub rdfs:label ?sname.
                    FILTER (lang(?l) = 'en')
                 }  
