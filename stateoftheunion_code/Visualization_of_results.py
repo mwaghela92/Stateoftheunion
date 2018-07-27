@@ -11,14 +11,14 @@ import ast
 from collections import Counter
 import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages as pp
+from matplotlib.backends.backend_pdf import PdfPages
 import os
 
 #path for mayur's macbook
 #Results = pd.read_csv('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/Results1.csv')
 #path for server
-Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/Results1.csv')
-
+Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/Results3_withoutbroader.csv')
+pp = PdfPages("Plotswithoutbroader.pdf")
 
 
 Results['KeyWords'] = Results['KeyWords'].apply(
@@ -99,7 +99,7 @@ def plotgraph(pp, most_common_df):
 
 ##path for server
 os.chdir('E:/mayur/State of the union/Stateoftheunion/Results/')
-pp = PdfPages("Plots.pdf")
+
 for i in range(len(Results)):
     a = filter(Results.iloc[i,4])
     plotgraph(pp, a)
