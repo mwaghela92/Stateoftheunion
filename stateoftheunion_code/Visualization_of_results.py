@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jul 25 15:17:54 2018
+Created on Wed Jul 25 15:17:54 2018.
 
 @author: mayur
 """
@@ -86,11 +86,12 @@ def filter(list_keywords):
 
 def plotgraph(pp, most_common_df):
     sns.set(style = 'darkgrid')
+    sns.set_context({"figure.figsize": (5, 5)})
     my_plot = sns.barplot(x = 'Frequency', y = 'KeyWords', data =most_common_df  )   
     ##path of mayur's macbook
     #plt.savefig('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/my')
     ##path for server
-    pp.savefig()
+    #pp.savefig()
     #return x
 
 
@@ -101,6 +102,7 @@ def plotgraph(pp, most_common_df):
 os.chdir('E:/mayur/State of the union/Stateoftheunion/Results/')
 
 for i in range(len(Results)):
+    i = 0
     a = filter(Results.iloc[i,4])
     plotgraph(pp, a)
     
