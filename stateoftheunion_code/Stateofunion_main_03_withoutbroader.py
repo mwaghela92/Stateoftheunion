@@ -190,7 +190,7 @@ Result_df= pd.DataFrame(columns = ['FileNames', 'President', 'Year' , 'KeyWords'
                                    'Resources'])
 
 ###... appending the names and years in a list and then storing the values to the 
-###... data frame...
+###... data frame
 
 presidents = list()
 year = list()
