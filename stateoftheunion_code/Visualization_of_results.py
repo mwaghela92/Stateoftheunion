@@ -15,11 +15,12 @@ from matplotlib.backends.backend_pdf import PdfPages
 import os
 
 #path for mayur's macbook
-#Results = pd.read_csv('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/Results1.csv')
-#path for server
-Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/'+
+Results = pd.read_csv('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/'+
                       'Results4_withoutbroader_withresources.csv')
-pp = PdfPages("Plotswith2charts.pdf")
+#path for server
+#Results = pd.read_csv('E:/mayur/State of the union/Stateoftheunion/Results/'+
+ #                     'Results4_withoutbroader_withresources.csv')
+pp = PdfPages("Trial1.pdf")
 
 
 Results['KeyWords'] = Results['KeyWords'].apply(
@@ -99,27 +100,30 @@ def resourcefilter(resources):
 
 def plotgraph(pp, most_common_df1,  most_common_df2, president, year):
     sns.set(style = 'darkgrid')
-    #sns.set_context({"figure.figsize": (5, 5)})
-    plt.subplot(1,2,1)
+    sns.set_context({"figure.figsize": (10, 8)})
+    plt.subplot(2,1,1)
     my_plot = sns.barplot(x = 'Frequency', y = 'KeyWords', data =most_common_df1  )   
     plt.title(" Keywords " + str(president) + " " + str(year) )
     
-    plt.subplot(1,2,2)
+    plt.subplot(2,1,2)
     my_plot = sns.barplot(x = 'Count', y = 'Resources', data =most_common_df2  )   
     plt.title(" Resources " + str(president) + " " + str(year) )
     
+    plt.tight_layout()
+    #pp.savefig()
     
     pp.savefig(bbox_inches = 'tight')
     #return x
 
 
 ##path of mayur's macbook
-#os.chdir('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/')
+os.chdir('/Users/mayur/Documents/GitHub/Stateoftheunion/Results/')
 
 ##path for server
-os.chdir('E:/mayur/State of the union/Stateoftheunion/Results/')
+#os.chdir('E:/mayur/State of the union/Stateoftheunion/Results/')
 
 for i in range(len(Results)):
+#for i in range(3):
     #i = 0
     a = filter(Results.iloc[i,4])
     b = resourcefilter(Results.iloc[i,5])
