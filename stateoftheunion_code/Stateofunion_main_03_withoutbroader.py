@@ -20,7 +20,7 @@ BASE_URL = 'http://api.dbpedia-spotlight.org/en/annotate?text={text}&confidence=
 
 
 ## paths for Mayur's macbook
-"""
+
 path = '/Users/mayur/Documents/GitHub/Stateoftheunion/stateoftheunion_data/' 
 all_files = os.listdir(path)
 os.chdir('/Users/mayur/Documents/GitHub/Stateoftheunion/stateoftheunion_code/')
@@ -30,7 +30,7 @@ os.chdir('/Users/mayur/Documents/GitHub/Stateoftheunion/stateoftheunion_code/')
 path = 'E:/mayur/State of the union/Stateoftheunion/stateoftheunion_data'
 all_files = os.listdir(path)
 os.chdir('E:/mayur/State of the union/Stateoftheunion/stateoftheunion_code')
-
+"""
 
 
 from retry import *
@@ -190,7 +190,7 @@ Result_df= pd.DataFrame(columns = ['FileNames', 'President', 'Year' , 'KeyWords'
                                    'Resources'])
 
 ###... appending the names and years in a list and then storing the values to the 
-###... data frame.
+### data frame.
 
 presidents = list()
 year = list()
