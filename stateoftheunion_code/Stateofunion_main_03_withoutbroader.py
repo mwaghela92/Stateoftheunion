@@ -164,10 +164,6 @@ for j in range(len(all_files)):
             for res in resources:
                 all_resources.append(res['@surfaceForm'])
             
-            
-                
-    #unique_keywords = set(all_keywords)
-    #print(unique_keywords)
     #keywordlist.append([])
     all_keywords_list.append([])
     all_resources_list.append([])
